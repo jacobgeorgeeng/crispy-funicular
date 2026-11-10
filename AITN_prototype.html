@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>AITN — Personal AI Assistant</title>
+<style>
+:root{--bg:#050b18;--panel:#0b1730;--blue:#168cff;--cyan:#48d7ff;--text:#eaf5ff;--muted:#9bb0ca}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#102b55 0,#050b18 48%);color:var(--text);font:16px system-ui,Arial,sans-serif;min-height:100vh}
+header{padding:22px 18px 12px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:25px;font-weight:800;letter-spacing:3px}.sub{font-size:12px;color:var(--muted);letter-spacing:.5px}
+.status{font-size:12px;color:#72f5a4;border:1px solid #1d9d69;border-radius:20px;padding:7px 10px}
+main{max-width:620px;margin:auto;padding:12px 16px 100px}
+.hero{border:1px solid #176cc4;border-radius:24px;background:linear-gradient(145deg,#10284c,#071226 70%);padding:25px 18px;text-align:center;box-shadow:0 0 28px #087bff24}
+.orb{width:118px;height:118px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;border:3px solid var(--cyan);box-shadow:0 0 18px #168cff, inset 0 0 22px #168cff66;background:radial-gradient(circle,#174f8d,#061225 70%);font-size:48px}
+h1{font-size:23px;margin:8px 0}.muted{color:var(--muted);line-height:1.5}
+button{cursor:pointer;color:var(--text);border:1px solid #167bd0;background:#0c2343;border-radius:14px;padding:12px 15px;font-size:15px}
+button:active{transform:scale(.98)}.primary{background:linear-gradient(100deg,#0879e8,#12b5ed);border:0;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.tile{min-height:86px;text-align:left;background:#0a1730;border:1px solid #173d69}.tile b{display:block;margin-top:7px}.tile span{font-size:23px}
+section.page{display:none}section.page.active{display:block}
+.card{background:#0a1730;border:1px solid #173d69;border-radius:18px;padding:16px;margin:12px 0}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+input,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #24517d;background:#050e20;color:var(--text);font:inherit}
+textarea{min-height:95px;resize:vertical}.row{display:flex;gap:8px;flex-wrap:wrap}
+.message{padding:12px 14px;border-radius:14px;margin:10px 0;max-width:90%;line-height:1.45;background:#10294b}
+.message.user{margin-left:auto;background:#075ca7}.hint{font-size:12px;color:var(--muted)}
+nav{position:fixed;bottom:0;left:0;right:0;background:#050b18ee;border-top:1px solid #173d69;display:flex;justify-content:center;gap:8px;padding:10px}
+nav button{flex:1;max-width:190px;padding:10px 6px;font-size:13px}
+footer{text-align:center;color:#7f9ab9;font-size:12px;padding:22px}
+</style>
+</head>
+<body>
+<header><div><div class="brand">AITN <span style="color:#42cfff">✦</span></div><div class="sub">YOUR PERSONAL AI ASSISTANT</div></div><div class="status">● DEMO MODE</div></header>
+<main>
+<section id="home" class="page active">
+ <div class="hero">
+  <div class="orb">🤖</div>
+  <h1>Hello, George.</h1><div class="muted">I'm AITN. Your personal assistant is ready.</div>
+  <p class="hint">This is an offline interface prototype. AI connection is not active yet.</p>
+  <button class="primary" onclick="showPage('chat')">Start a conversation</button>
+ </div>
+ <div class="grid">
+  <button class="tile" onclick="showPage('chat')"><span>💬</span><b>AI Chat</b><small class="muted">Talk with AITN</small></button>
+  <button class="tile" onclick="showPage('memory')"><span>🧠</span><b>Memory</b><small class="muted">Saved information</small></button>
+  <button class="tile" onclick="showPage('notes')"><span>📝</span><b>Notes</b><small class="muted">Write and save notes</small></button>
+  <button class="tile" onclick="showPage('settings')"><span>⚙️</span><b>Settings</b><small class="muted">Assistant preferences</small></button>
+ </div>
+ <div class="card"><b>Connection</b><p class="muted">Interface works offline. Online AI and a local AI model will be added in later development stages.</p></div>
+</section>
+<section id="chat" class="page">
+ <h1>💬 Chat with AITN</h1><div class="card"><div class="message">Hello George! I'm your AITN prototype. My AI brain is not connected yet, but we can test this screen.</div><div id="chatlog"></div>
+ <label for="prompt">Your message</label><input id="prompt" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()">
+ <div class="row" style="margin-top:10px"><button class="primary" onclick="sendMsg()">Send</button><button onclick="alert('Voice input will be added in a later stage.')">🎙️ Voice</button></div></div>
+ <p class="hint">Demo replies are fixed; this is not the AI engine yet.</p>
+</section>
+<section id="memory" class="page">
+ <h1>🧠 Memory</h1><div class="card"><p class="muted">Memory controls will let you choose what AITN can save. Nothing is being uploaded or synced in this prototype.</p><label for="mem">Add a memory note</label><textarea id="mem" placeholder="Write something you want AITN to remember..."></textarea><button class="primary" onclick="saveText('mem','memoryList')">Save on this device</button><div id="memoryList"></div></div>
+</section>
+<section id="notes" class="page">
+ <h1>📝 Notes</h1><div class="card"><label for="note">New note</label><textarea id="note" placeholder="Write your note..."></textarea><button class="primary" onclick="saveText('note','noteList')">Save note</button><div id="noteList"></div></div>
+</section>
+<section id="settings" class="page">
+ <h1>⚙️ Settings</h1><div class="card"><b>Assistant identity</b><p class="muted">Name: AITN<br>Personality: professional, friendly and capable<br>Voice preference: female<br>Theme: blue and black</p><hr style="border-color:#173d69"><b>Privacy</b><p class="muted">This prototype stores notes only in this browser on this device.</p><b>AI status</b><p class="muted">Not connected yet — online and offline AI will be configured later.</p></div>
+</section>
+<footer>AITN • Built step by step with George</footer>
+</main>
+<nav>
+<button onclick="showPage('home')">🏠 Home</button><button onclick="showPage('chat')">💬 Chat</button><button onclick="showPage('notes')">📝 Notes</button><button onclick="showPage('settings')">⚙️ Settings</button>
+</nav>
+<script>
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function sendMsg(){let i=document.getElementById('prompt'),v=i.value.trim();if(!v)return;let log=document.getElementById('chatlog');let u=document.createElement('div');u.className='message user';u.textContent=v;log.appendChild(u);let a=document.createElement('div');a.className='message';a.textContent="I received your message. My AI engine hasn't been connected yet; we'll add it in the next stage.";log.appendChild(a);i.value='';}
+function saveText(inputId,listId){let i=document.getElementById(inputId),v=i.value.trim();if(!v){alert('Please write something first.');return}let key='aitn_'+listId,items=JSON.parse(localStorage.getItem(key)||'[]');items.push(v);localStorage.setItem(key,JSON.stringify(items));i.value='';renderList(listId)}
+function renderList(id){let items=JSON.parse(localStorage.getItem('aitn_'+id)||'[]'),el=document.getElementById(id);el.innerHTML='';items.forEach((v,n)=>{let d=document.createElement('div');d.className='message';d.textContent=(n+1)+'. '+v;el.appendChild(d)})}
+renderList('noteList');renderList('memoryList');
+</script>
+</body></html>
